@@ -1,0 +1,48 @@
+%run trapum_database.py
+
+
+#Projects
+for i in range(0,10000):
+    trapum.create_new_project('trapum%d'%i,'note%d'%i)
+
+#Targets
+for i in range(0,50):
+    trapum.create_new_target(1,'PSR%d'%i,12.3+i,14.6*i,'GC',12+i,124-i,i/360,'met%d'%i,'note%d'%i)
+for i in range(0,50):
+    trapum.create_new_target(5,'PSR%d'%i,12.3+i,14.6*i,'GC',12+i,124-i,i/360,'met%d'%i,'note%d'%i)
+for i in range(100,200):
+    trapum.create_new_target(24,'PSR%d'%i,12.3+i,14.6*i,'GC',12+i,124-i,i/360,'met%d'%i,'note%d'%i)
+for i in range(200,1000):
+    trapum.create_new_target(100,'PSR%d'%i,12.3+i,14.6*i,'GC',12+i,124-i,i/360,'met%d'%i,'note%d'%i)
+
+
+#Beamformer_config
+
+for i in range(0,300):
+    trapum.create_new_beamformer_config(random.uniform(1400.0,3000.0),random.uniform(100,500),random.uniform(100,2000),random.uniform(40,100),'meta%d'%i,'notes%d'%i)
+
+# Pointings
+for i in range(0,100):
+    trapum.create_new_pointing(1,i+1,random.uniform(2000,10000),random.uniform(1.1,9.9),random.uniform(1,500),'pmeta%d'%i,'pnote%d'%i)
+
+for i in range(100,2500):
+    trapum.create_new_pointing(np.random.randint(1,1000),np.random.randint(1,300),random.uniform(2000,10000),random.uniform(1.1,9.9),random.uniform(1,50),'pmeta%d'%i,'pnote%d'%i)
+
+
+#Beams
+for i in range(0,5000):  
+    trapum.create_new_beam(np.random.randint(1,2500),1,random.uniform(0.0,24.0),random.uniform(-90.0,90.0),0)
+
+for i in range(576,5000):
+    trapum.create_new_beam(np.random.randint(5,2500),1,random.uniform(0.0,24.0),random.uniform(-90.0,90.0),0)
+
+#Pipelines
+for i in range(0,200):
+    trapum.create_new_pipeline(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)),'pipeline%d'%i,'pipe_note%d'%i)
+
+#Hardwares
+
+
+#Processings
+
+
