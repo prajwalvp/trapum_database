@@ -38,7 +38,7 @@ CREATE TABLE `Targets` (
   `notes` text NOT NULL COMMENT "useful points to be noted",
 --  INDEX(`ra`,`dec`,`target_id`), 
   PRIMARY KEY (`target_id`),
-  FOREIGN KEY (`project_id`) REFERENCES Projects(`project_id`) 
+  FOREIGN KEY (`project_id`) REFERENCES Projects(`project_id`) ON UPDATE CASCADE 
   
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -81,7 +81,6 @@ CREATE TABLE `Projects`(
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Processings` (
   `processing_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT "unique ID of processing",
-  `pointing_id` int(11) unsigned NOT NULL COMMENT "unique observation identifier",
   `pipeline_id` int(11) unsigned NOT NULL COMMENT "unique ID of pipeline through which data is running",
   `hardware_id` int(11) unsigned DEFAULT NULL COMMENT "unique hardware iderntifier",
   `submit_time` float(10) NOT NULL COMMENT "time stamp of submitting job",
@@ -91,9 +90,8 @@ CREATE TABLE `Processings` (
   `metadata` text DEFAULT NULL COMMENT "some extra parameters if any",  
   `notes` text NOT NULL COMMENT "useful points to be noted",
   PRIMARY KEY(`processing_id`),
-  FOREIGN KEY (`pipeline_id`) REFERENCES Pipelines(`pipeline_id`),
-  FOREIGN KEY (`pointing_id`) REFERENCES Pointings(`pointing_id`),
-  FOREIGN KEY (`hardware_id`) REFERENCES Hardwares(`hardware_id`)
+  FOREIGN KEY (`pipeline_id`) REFERENCES Pipelines(`pipeline_id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`hardware_id`) REFERENCES Hardwares(`hardware_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -137,7 +135,7 @@ CREATE TABLE `Beams` (
   `coherent` tinyint(1) DEFAULT NULL COMMENT " Coherent or incoherent beam", 
 --  INDEX (`ra`,`dec`,`beam_id`),
   PRIMARY KEY (`beam_id`),
-  FOREIGN KEY (`pointing_id`) REFERENCES Pointings(`pointing_id`)
+  FOREIGN KEY (`pointing_id`) REFERENCES Pointings(`pointing_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -159,9 +157,9 @@ CREATE TABLE `Data_Products` (
   `metadata` text NOT NULL COMMENT "important points described",
   `notes` text NOT NULL COMMENT "useful points to be noted",  
    PRIMARY KEY (`dp_id`),
-   FOREIGN KEY (`pointing_id`) REFERENCES Pointings(`pointing_id`),
-   FOREIGN KEY (`beam_id`) REFERENCES Beams(`beam_id`),
-   FOREIGN KEY (`processing_id`) REFERENCES Processings(`processing_id`) ON DELETE SET DEFAULT ON UPDATE CASCADE,    
+   FOREIGN KEY (`pointing_id`) REFERENCES Pointings(`pointing_id`) ON UPDATE CASCADE,
+   FOREIGN KEY (`beam_id`) REFERENCES Beams(`beam_id`) ON UPDATE CASCADE,
+--   FOREIGN KEY (`processing_id`) REFERENCES Processings(`processing_id`),    
    INDEX (`dp_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 
@@ -184,8 +182,8 @@ CREATE TABLE `Pointings` (
   `metadata` text NOT NULL COMMENT "other important details described",
   `notes` text NOT NULL COMMENT "useful points to be noted",
   PRIMARY KEY (`pointing_id`),
-  FOREIGN KEY (`target_id`) REFERENCES Targets(`target_id`),
-  FOREIGN KEY (`bf_config_id`) REFERENCES Beamformer_Configuration(`bf_config_id`)
+  FOREIGN KEY (`target_id`) REFERENCES Targets(`target_id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`bf_config_id`) REFERENCES Beamformer_Configuration(`bf_config_id`) ON UPDATE CASCADE
 --  INDEX (`pointing_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -203,8 +201,8 @@ CREATE TABLE `Processing_Pivot` (
   `processing_id` int(11) unsigned NOT NULL COMMENT "processing identifier",
 --  INDEX (`processing_pivot_id`),
   PRIMARY KEY (`processing_pivot_id`),
-  FOREIGN KEY (`dp_id`) REFERENCES Data_Products(`dp_id`), 
-  FOREIGN KEY (`processing_id`) REFERENCES Processings(`processing_id`) 
+  FOREIGN KEY (`dp_id`) REFERENCES Data_Products(`dp_id`) ON UPDATE CASCADE, 
+  FOREIGN KEY (`processing_id`) REFERENCES Processings(`processing_id`) ON UPDATE CASCADE 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

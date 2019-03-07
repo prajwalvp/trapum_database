@@ -4,6 +4,6 @@ MAINTAINER me
 
 ENV MYSQL_DATABASE=trapum
 
-ADD TRAPUM.sql /docker-entrypoint-initdb.d
+ADD TRAPUM_07mar19.sql /docker-entrypoint-initdb.d
 
 EXPOSE 3306

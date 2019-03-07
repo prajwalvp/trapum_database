@@ -151,7 +151,8 @@ class TrapumDataBase(BaseDBManager):
         """ 
         cols=["`centre_frequency`","`bandwidth`","`nchans`","`tsamp`","`receiver`","`metadata`"]
         values = ["'%f'"%centre_freq,"'%f'"%bandwidth,"'%d'"%nchans,"'%f'"%tsamp,"%s"%receiver,"'%s'"%metadata]
-        self.simple_insert("Beamformer_Configuration",cols,values)
+        last_id = self.simple_insert("Beamformer_Configuration",cols,values)
+        return last_id
 
 
     def create_target(self,project_id,source_name,ra,dec,region,semi_major_axis,semi_minor_axis,position_angle,metadata,notes):
@@ -172,7 +173,8 @@ class TrapumDataBase(BaseDBManager):
         cols = ["`project_id`","`source_name`","`ra`","`dec`","`region`","`semi_major_axis`","`semi_minor_axis`","`position_angle`","`metadata`","`notes`"]
         values = ["%d"%project_id,"%s"%source_name,"%s"%ra,"%s"%dec,"%s"%region,"%s"%semi_major_axis,"%s"%semi_minor_axis,
                   "%s"%position_angle,"%s"%metadata,"%s"%notes]
-        self.simple_insert("Targets",cols,values)
+        last_id = self.simple_insert("Targets",cols,values)
+        return last_id
 
     # During Observations
     def create_pointing(self,target_id,bf_config_id,tobs,utc_start,sb_id,metadata,notes):
@@ -190,7 +192,9 @@ class TrapumDataBase(BaseDBManager):
          
         cols = ["`target_id`","`bf_config_id`","`tobs`","`utc_start`","`sb_id`","`metadata`","`notes`"]     
         vals = ["%d"%target_id,"%d"%bf_config_id,"%f"%tobs,"'%s'"%utc_start,"'%s'"%sb_id,"'%s'"%metadata,"'%s'"%notes]
-        self.simple_insert("Pointings",cols,vals)
+        last_id = self.simple_insert("Pointings",cols,vals)
+        return last_id
+         
 
     # After observations
     
@@ -206,7 +210,8 @@ class TrapumDataBase(BaseDBManager):
         """ 
         cols = ["`pointing_id`","`on_target`","`ra`","`dec`","`coherent`"]
         vals = ["%d"%pointing_id,"%d"%on_target,"%f"%ra,"%f"%dec,"%d"%coherent]
-        self.simple_insert("Beams",cols,vals)
+        last_id = self.simple_insert("Beams",cols,vals)
+        return last_id
 
 
     def update_tobs(self,pointing_id,tobs):
@@ -218,8 +223,9 @@ class TrapumDataBase(BaseDBManager):
         """ 
         cols = "tobs"
         values = tobs
-        condition = "pointing_id = %f"%pointing_id # update tobs for particular pointing id 
-        self.simple_update("Pointings",cols,values,condition)
+        condition = "pointing_id = %d"%pointing_id # update tobs for particular pointing id 
+        last_id = self.simple_update("Pointings",cols,values,condition)
+        return last_id
 
 
     def create_raw_dataproduct(self,pointing_id,beam_id,file_status,filepath,file_type,metadata,notes):
@@ -236,7 +242,9 @@ class TrapumDataBase(BaseDBManager):
         """ 
         cols=["pointing_id","beam_id","file_status","filepath","file_type","metadata","notes"]
         values=["%d"%pointing_id,"%d"%beam_id,"'%s'"%file_status,"'%s'"%filepath,"'%s'"%file_type,"'%s'"%metadata,"'%s'"%notes]
-        self.simple_insert("Data_Products",cols,values)
+        last_id = self.simple_insert("Data_Products",cols,values)
+        return last_id
+        
         
     def create_secondary_dataproduct(self,pointing_id,beam_id,processing_id,file_status,filepath,file_type,metadata,notes):
         """
@@ -248,12 +256,13 @@ class TrapumDataBase(BaseDBManager):
         @params  file_status    If file exists or not: 1 if exists, 0 if deleted,  
         @params  filepath       Path to file
         @params  file_type      Type of file produced 
-        @params  metadata     Info on other parameters as key value pair
-        @params  notes        Any extra info about the target
+        @params  metadata       Info on other parameters as key value pair
+        @params  notes          Any extra info about the target
         """ 
         cols=["pointing_id","beam_id","processing_id","file_status","filepath","file_type","metadata","notes"]
         values=["%d"%pointing_id,"%d"%beam_id,"%d"%processing_id,"'%s'"%file_status,"'%s'"%filepath,"'%s'"%file_type,"'%s'"%metadata,"'%s'"%notes]
-        self.simple_insert("Data_Products",cols,values)
+        last_id = self.simple_insert("Data_Products",cols,values)
+        return last_id
 
     def create_processing(self,pointing_id,pipeline_id,hardware_id,submit_time,start_time,end_time,process_status,metadata,notes):
         """
@@ -273,7 +282,8 @@ class TrapumDataBase(BaseDBManager):
                 ,"process_status","metadata","notes"]
         vals=["%d"%pointing_id,"%d"%pipeline_id,"%d"%hardware_id,"'%s'"%submit_time,"'%s'"%start_time,"'%s'"%end_time,
               "'%s'"%process_status,"'%s'"%metadata,"'%s'"%notes]
-        self.simple_insert("Processings",cols,vals)
+        last_id = self.simple_insert("Processings",cols,vals)
+        return last_id
 
     def update_submit_time(self,submit_time,processing_id):
         """
@@ -311,7 +321,8 @@ class TrapumDataBase(BaseDBManager):
         """ 
         cols = ["hash","name","notes"]
         values = ["%s"%HASH,"%s"%name,"%s"%notes]
-        self.simple_insert("Pipelines",cols,values)
+        last_id = self.simple_insert("Pipelines",cols,values)
+        return last_id
     
     def create_pivot(self,dp_id,processing_id):
         """
@@ -322,7 +333,9 @@ class TrapumDataBase(BaseDBManager):
         """ 
         cols = ["dp_id","processing_id",]
         values = ["%s"%dp_id,"%s"%processing_id]
-        self.simple_insert("Processing_Pivot",cols,values)
+        last_id = self.simple_insert("Processing_Pivot",cols,values)
+        return last_id
+        
 
     def update_start_time(self,start_time,processing_id):
         cols = ["start_time"]
@@ -341,7 +354,8 @@ class TrapumDataBase(BaseDBManager):
         """
         cols = ["name","metadata","notes"]
         values = ["'%s'"%name,"'%s'"%metadata,"'%s'"%notes]
-        self.simple_insert("Hardwares",cols,values)
+        last_id = self.simple_insert("Hardwares",cols,values)
+        return last_id
 
     
     # End of pipeline run 
@@ -350,12 +364,9 @@ class TrapumDataBase(BaseDBManager):
     def update_end_time(self,end_time,processing_id):
         cols = ["end_time"]
         values = ["%s"%end_time]
-        condition = "Pipeline run over and end_time = 0" 
+        condition = "processing_id=%d"%processing_id 
         self.simple_update("Processings",cols,vals,condition)
     
-    # Update new dp_id with parent_id reference
-
-
 
     def get_obs_id_from_utc(self,utc):
         obs = qb.Table("Observations")
@@ -389,22 +400,38 @@ class TrapumDataBase(BaseDBManager):
         @params  table        Table for new entry
         @params  cols         Columns in table to be changed
         @params  values       values for the respective columns to be added
+  
+        @return  lastrowid    last inserted primary key id
         """
         columns = str(tuple(cols)).replace('\'','')
         vals = str(tuple(values)).replace('\"','')
         print columns
         print vals
         print "INSERT INTO %s%s VALUES %s"%(table,columns,vals) 
-        last_id = self.execute_insert("INSERT INTO %s%s VALUES %s"%(table,columns,vals)) 
-        print last_id
+        self.execute_insert("INSERT INTO %s%s VALUES %s"%(table,columns,vals)) 
+        return self.cursor.lastrowid
 
     def simple_update(self,table,cols,values,condition):
+        """
+        @brief   Updates existing entry in respective table   
+    
+        @params  table        Table to update
+        @params  cols         Columns in table to be updated
+        @params  values       values for the respective columns to be updated
+        """
         self.execute_insert("UPDATE %s set %s=%s WHERE %s"%(table,cols,values,condition))
-        #self.execute_query("SELECT LAST")   
         print "UPDATE %s set %s=%s WHERE %s"%(table,cols,values,condition)
         
-    def get_single_value(self,table,col,condition):
-        #print "select %s from %s where %s"%(col,table,condition)
+    def get_values(self,table,col,condition):
+        """
+        @brief   Updates existing entry in respective table   
+    
+        @params  table        Table to analyse
+        @params  cols         Columns in table to be checked
+        @params  values       values for the respective columns to be retrieved
+
+        @return  list of values requested
+        """ 
         self.execute_query("select %s from %s where %s"%(col,table,condition))
         output =  self.cursor.fetchall()
         vals=[]
@@ -413,11 +440,82 @@ class TrapumDataBase(BaseDBManager):
         return vals
 
 
+################ Useful Functions ########################
+
+
+    def get_project_id(self,description):
+        """
+        @brief   Retrieve name of project
+
+        @params  description   Name of project (need not be exact)   
+        
+        @return  project identifier number  
+        """
+        condition = "name LIKE '%s'" % description
+        return self.get_values("Projects","project_id",condition)
+
+    def get_beam_ids_for_pointing(self,pointing_id):
+        """
+        @brief   Retrieve all beams for particular pointing
+
+        @params  pointing_id   pointing identifier number
+        
+        @return  list of beam identifier values  
+        """
+        condition = "pointing_id LIKE '%s'" %pointing_id
+        return self.get_values("Beams","beam_id",condition)
+
+    def get_non_processed_data_products(self):
+        """
+        @brief   Retrieve data_products which have not been processed at all
+        
+        @return  list of Data Product identifier values 
+        """
+        condition = "processing_id IS NULL"
+        return self.get_values("Data_Products","dp_id",condition)
+
+    def get_data_products_for_pointing(self,pointing_id):
+        """
+        @brief   Retrieve data products for particular pointing
+
+        @params  pointing_id          pointing identifier number
+        
+        @return  list of data product identifier values
+        """
+        condition = "pointing_id LIKE %s"%pointing_id
+        return self.get_values("Data_Products","dp_id",condition)
+
+    def get_pointings_for_target(self,target_id):
+        """
+        @brief   Retrieve pointings for particular target 
+
+        @params  target_id    target identifier number
+        
+        @return  list of pointing identifier values
+        """
+        condition = "target_id LIKE %s"%target_id
+        return self.get_values("Pointings","pointing_id",condition)
+
+    def get_data_products_from_processing(self,processing_id):
+        """
+        @brief   Retrieve data products from particular processing
+
+        @params  processing_id   processing identifier value 
+        
+        @return  list of data product identifier values 
+        """
+        condition = "processing_id LIKE %s"%processing_id
+        return self.get_values("Processing_Pivot","dp_id",condition)
+
+
+
 
 if __name__ =='__main__':
     trapum = TrapumDataBase();
     c = trapum.connect()
     c1 = c.cursor()
+    #trapum.execute_query('set @update_id:=0') # initiates latest updated primary key id to zero
+
     ####  Preparation for observation ####
 
     ##Targets and Projects will already be filled

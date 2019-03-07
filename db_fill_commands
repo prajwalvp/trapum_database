@@ -2,7 +2,7 @@
 
 
 #Projects
-for i in range(0,10000):
+for i in range(0,400):
     trapum.create_new_project('trapum%d'%i,'note%d'%i)
 
 #Targets
