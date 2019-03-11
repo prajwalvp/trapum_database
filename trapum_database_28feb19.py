@@ -112,7 +112,7 @@ class TrapumDataBase(BaseDBManager):
     __HOST = "127.0.0.1"
     __NAME = "trapum_28feb19"
     __USER = "root"
-    __PASSWD = "Praj3108!"
+    __PASSWD = "passwd"
     def __init__(self):
         super(TrapumDataBase,self).__init__()
 
