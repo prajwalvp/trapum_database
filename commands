@@ -1,4 +1,4 @@
-##### Setup MySQL server and connect#####
+##### Setup MySQL server and connect via Docker#####
 
 docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=abc -d trapum_working   # Creates mysql server
 docker run -it --link some-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' # Connects to mysql
@@ -6,21 +6,11 @@ docker run -it --link some-mysql:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PO
 
 ##### Connect to SQL server from MySQLdb python
 
-To ensure user/IP can access the database, run the following in the SQL prompt.
+Ensure  that user/IP can access the database
 
-example:
-CREATE USER 'prajwal'@'%' IDENTIFIED BY '123';
-GRANT ALL PRIVILEGES ON *.* TO 'prajwal'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
+An  Ipython example:
 
-In python:
-
-import MySQLDb
-MySQLdb.connect(host="172.17.0.2",user="prajwal",passwd="123",db="trapum")
-
-(host is the docker container ip)
-
-In [9]: db = MySQLdb.connect(host="172.17.0.2",user="prajwal",passwd="123",db="trapum")
+In [9]: db = MySQLdb.connect(host="172.17.0.2",user="prajwal",passwd="user defined passwd",db="name of trapum db")
 
 In [10]: db.query("show tables")
 
